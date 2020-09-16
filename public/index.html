@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link
+            href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+            rel="stylesheet"
+        />
+        <link
+            href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css"
+            rel="stylesheet"
+        />
+        <style>
+            @font-face {
+                font-family: 'jf-openhuninn';
+                src: url('./assets/font/jf-openhuninn-1.0.woff');
+            }
+            * {
+                font-family: 'jf-openhuninn';
+            }
+            body::-webkit-scrollbar {
+                display: none;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+            .cotainer {
+                width: 100%;
+                height: 100%;
+            }
+
+            .title-bar {
+                width: 100%;
+                height: 30px;
+                background-color: #282c34;
+                -webkit-user-select: none;
+                -webkit-app-region: drag;
+            }
+            .title-bar {
+                display: flex;
+            }
+
+            .title-bar .window-icon {
+            }
+            .title-bar .window-title {
+                flex: 0 1 auto;
+            }
+            .title-bar .window-controls {
+                display: flex;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- <div class="container">
+            <div class="title-bar">
+                <div class="window-icon">Icon</div>
+                <div class="window-title">Title Text</div>
+                <div class="window-controls">
+                    <div>min</div>
+                    <div>max</div>
+                    <div>close</div>
+                </div>
+            </div>
+        </div> -->
+        <div id="app">123</div>
+        <script src="./bundle.js"></script>
+    </body>
+</html>
