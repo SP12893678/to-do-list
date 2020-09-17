@@ -86,7 +86,7 @@
                         <v-list-item-content>
                             <v-list-item-title>{{ category.text }}</v-list-item-title>
                         </v-list-item-content>
-                        <v-list-item-action>
+                        <v-list-item-action class="ma-0 pa-0">
                             <v-btn @click="deleteCategory(index)" icon>
                                 <v-icon>mdi-minus</v-icon>
                             </v-btn>
