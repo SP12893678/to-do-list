@@ -54,6 +54,20 @@ function createWindow() {
 
     win.on('minimize', function(event) {
         event.preventDefault()
-        // win.hide()
+        win.hide()
     })
+
+    setWindowTray()
+}
+
+function setWindowTray() {
+    const iconPath = path.join(__dirname, './assets/images/strategy.png')
+    const appIcon = new Tray(iconPath)
+    var contextMenu = Menu.buildFromTemplate([
+        { label: '打開', click: () => win.show() },
+        { label: '離開', click: () => win.close() },
+    ])
+    appIcon.setToolTip('右鍵點擊選單')
+    appIcon.setContextMenu(contextMenu)
+    win.tray = appIcon
 }

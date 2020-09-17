@@ -79,13 +79,18 @@
                 <v-divider></v-divider>
 
                 <v-list-item-group v-model="category" class="mt-2" mandatory>
-                    <v-list-item dense v-for="category in categories" :key="category">
+                    <v-list-item dense v-for="(category, index) in categories" :key="category">
                         <v-list-item-icon class="ml-4 mr-4">
                             <v-icon :color="category.icon_color">{{ category.icon }}</v-icon>
                         </v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title>{{ category.text }}</v-list-item-title>
                         </v-list-item-content>
+                        <v-list-item-action>
+                            <v-btn @click="deleteCategory(index)" icon>
+                                <v-icon>mdi-minus</v-icon>
+                            </v-btn>
+                        </v-list-item-action>
                     </v-list-item>
                 </v-list-item-group>
             </v-list>
@@ -119,15 +124,17 @@
                     <v-menu
                         v-model="task_menu.menu"
                         :close-on-content-click="false"
-                        nudge-width="300"
-                        max-width="300"
+                        nudge-width="400"
+                        max-width="400"
                         offset-y
                     >
                         <template v-slot:activator="{ on, attrs }">
-                            <v-list-item v-bind="attrs" v-on="on"> <v-icon>mdi-plus</v-icon>增加任務 </v-list-item>
+                            <v-list-item @click="task_menu.type = 'add'" v-bind="attrs" v-on="on">
+                                <v-icon>mdi-plus</v-icon>增加任務
+                            </v-list-item>
                         </template>
                         <v-form ref="task_menu">
-                            <v-card>
+                            <v-card class="pa-4">
                                 <v-card-text>
                                     <v-text-field
                                         v-model="task_menu.title"
@@ -185,8 +192,25 @@
                                     ></v-select>
                                 </v-card-text>
                                 <v-card-actions>
-                                    <v-btn @click="addTask" color="light-blue" text block>
+                                    <v-btn
+                                        v-if="task_menu.type == 'add'"
+                                        class="mt-8"
+                                        @click="addTask"
+                                        color="light-blue"
+                                        text
+                                        block
+                                    >
                                         <v-icon>mdi-check-circle-outline</v-icon>添加
+                                    </v-btn>
+                                    <v-btn
+                                        v-if="task_menu.type == 'edit'"
+                                        class="mt-8"
+                                        @click="saveTask"
+                                        color="light-blue"
+                                        text
+                                        block
+                                    >
+                                        <v-icon>mdi-save</v-icon>儲存
                                     </v-btn>
                                 </v-card-actions>
                             </v-card>
@@ -204,14 +228,17 @@
                             hide-details
                         ></v-checkbox>
                     </v-list-item-content>
+                    <v-list-item-content class="pa-0 ma-0">
+                        {{ item.date }}
+                    </v-list-item-content>
 
                     <v-list-item-action class="mb-0 mt-0">
-                        <v-btn icon>
+                        <v-btn @click="showEditTaskMenu(index)" icon>
                             <v-icon>mdi-circle-edit-outline</v-icon>
                         </v-btn>
                     </v-list-item-action>
                     <v-list-item-action class="mb-0 mt-0">
-                        <v-btn icon>
+                        <v-btn @click="deleteTask(index)" icon>
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
                     </v-list-item-action>
@@ -271,6 +298,8 @@ export default {
                 title: '',
                 description: '',
                 category: '',
+                type: 'add',
+                index: -1,
             },
             search: '',
         }
@@ -344,6 +373,16 @@ export default {
     },
     methods: {
         test() {},
+        deleteCategory(index) {
+            this.categories.splice(index, 1)
+            const cookie = {
+                url: 'http://127.0.0.1',
+                name: 'category_menu',
+                value: JSON.stringify(this.categories),
+                expirationDate: new Date().getTime() + 30 * 24 * 3600 * 1000,
+            }
+            session.defaultSession.cookies.set(cookie)
+        },
         addCategory() {
             let category = {
                 text: this.category_menu.text,
@@ -386,6 +425,37 @@ export default {
                 expirationDate: new Date().getTime() + 30 * 24 * 3600 * 1000,
             }
             session.defaultSession.cookies.set(cookie)
+        },
+        deleteTask(index) {
+            this.tasks.splice(index, 1)
+            const cookie = {
+                url: 'http://127.0.0.1',
+                name: 'tasks',
+                value: JSON.stringify(this.tasks),
+                expirationDate: new Date().getTime() + 30 * 24 * 3600 * 1000,
+            }
+            session.defaultSession.cookies.set(cookie)
+        },
+        showEditTaskMenu(index) {
+            let { title, description, date, category, notfiy } = this.tasks[index]
+            Object.assign(this.task_menu, { title, description, date, category, notfiy, index })
+            this.task_menu.type = 'edit'
+            this.task_menu.menu = true
+        },
+        saveTask() {
+            let { title, description, date, category, notfiy, index } = this.task_menu
+
+            Object.assign(this.tasks[index], { title, description, date, category, notfiy })
+
+            const cookie = {
+                url: 'http://127.0.0.1',
+                name: 'tasks',
+                value: JSON.stringify(this.tasks),
+                expirationDate: new Date().getTime() + 30 * 24 * 3600 * 1000,
+            }
+            session.defaultSession.cookies.set(cookie)
+
+            this.task_menu.menu = false
         },
     },
     computed: {
